@@ -60,8 +60,12 @@ module GreenhouseIo
       get_from_harvest_api "/scorecards/#{id}", options
     end
 
-    def scheduled_interviews(id, options = {})
+    def application_scheduled_interviews(id, options = {})
       get_from_harvest_api "/applications/#{id}/scheduled_interviews", options
+    end
+
+    def scheduled_interviews(id = nil, options = {})
+      get_from_harvest_api "/scheduled_interviews#{path_id(id)}", options
     end
 
     def jobs(id = nil, options = {})
@@ -96,7 +100,7 @@ module GreenhouseIo
 
     def get_from_harvest_api(url, options = {})
       response = get_response(url, {
-        :query => permitted_options(options), 
+        :query => permitted_options(options),
         :basic_auth => basic_auth
       })
 
