@@ -42,7 +42,7 @@ module GreenhouseIo
 
     def query_organization(options_hash)
       org = options_hash[:organization] || @organization
-      org.nil? ? (raise GreenhouseIo::Error.new("organization can't be blank")) : org
+      org.nil? ? (raise GreenhouseIo::Errors::GreenhouseError.new("organization can't be blank")) : org
     end
 
     def get_from_job_board_api(url, options = {})
@@ -50,16 +50,16 @@ module GreenhouseIo
       if response.code == 200
         parse_json(response)
       else
-        raise GreenhouseIo::Error.new(response.code)
+        raise GreenhouseIo::Errors::GreenhouseError.new(response.code)
       end
     end
 
     def post_to_job_board_api(url, options)
       response = post_response(url, options)
       if response.code == 200
-        response.include?("success") ? parse_json(response) : raise(GreenhouseIo::Error.new(response["reason"]))
+        response.include?("success") ? parse_json(response) : raise(GreenhouseIo::Errors::GreenhouseError.new(response["reason"]))
       else
-        raise GreenhouseIo::Error.new(response.code)
+        raise GreenhouseIo::Errors::GreenhouseError.new(response.code)
       end
     end
   end

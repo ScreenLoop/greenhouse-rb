@@ -3,9 +3,10 @@ module GreenhouseIo
     include HTTMultiParty
     include GreenhouseIo::API
 
-    PERMITTED_OPTIONS = [:page, :per_page, :job_id]
+    PERMITTED_OPTIONS = %i[page per_page job_id]
 
     attr_accessor :api_token, :rate_limit, :rate_limit_remaining, :link
+
     base_uri 'https://harvest.greenhouse.io/v1'
 
     def initialize(api_token = nil)
@@ -99,37 +100,38 @@ module GreenhouseIo
     end
 
     def permitted_options(options)
-      options.select { |key, value| PERMITTED_OPTIONS.include? key }
+      options.select { |key, _value| PERMITTED_OPTIONS.include? key }
     end
 
     def get_from_harvest_api(url, options = {})
       response = get_response(url, {
-        :query => permitted_options(options),
-        :basic_auth => basic_auth
-      })
+                                query: permitted_options(options),
+                                basic_auth: basic_auth
+                              })
 
-      set_headers_info(response.headers)
-
-      if response.code == 200
-        parse_json(response)
-      else
-        raise GreenhouseIo::Error.new(response.code)
-      end
+      handle_response(response)
     end
 
     def post_to_harvest_api(url, body, headers)
       response = post_response(url, {
-        :body => JSON.dump(body),
-        :basic_auth => basic_auth,
-        :headers => headers
-      })
+                                 body: JSON.dump(body),
+                                 basic_auth: basic_auth,
+                                 headers: headers
+                               })
 
+      handle_response(response)
+    end
+
+    def handle_response(response)
       set_headers_info(response.headers)
 
-      if response.code == 200
+      case response.code
+      when 200
         parse_json(response)
+      when 429
+        raise GreenhouseIo::Errors::RateLimitError, response.code
       else
-        raise GreenhouseIo::Error.new(response.code)
+        raise GreenhouseIo::Errors::GreenhouseError, response.code
       end
     end
 
