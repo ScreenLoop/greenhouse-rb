@@ -80,11 +80,11 @@ module GreenhouseIo
       get_from_harvest_api "/job_stages#{path_id(id)}", options
     end
 
-    def job_post(id, options = {})
-      get_from_harvest_api "/job_posts/#{id}", options
+    def job_posts(id = nil, options = {})
+      get_from_harvest_api "/job_posts#{path_id(id)}", options
     end
 
-    def job_posts(id, options = {})
+    def job_post_for_job(id, options = {})
       get_from_harvest_api "/jobs/#{id}/job_post", options
     end
 
