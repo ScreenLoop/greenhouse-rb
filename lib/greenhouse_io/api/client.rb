@@ -96,6 +96,10 @@ module GreenhouseIo
       get_from_harvest_api "/sources#{path_id(id)}", options
     end
 
+    def rejection_reasons(options = {})
+      get_from_harvest_api '/rejection_reasons', options
+    end
+
     private
 
     def path_id(id = nil)
