@@ -36,7 +36,10 @@ module GreenhouseIo
       post_to_harvest_api(
         "/candidates/#{candidate_id}/activity_feed/notes",
         note_hash,
-        { 'On-Behalf-Of' => on_behalf_of.to_s }
+        {
+          'On-Behalf-Of' => on_behalf_of.to_s,
+          'Content-Type' => 'application/json'
+        }
       )
     end
 
