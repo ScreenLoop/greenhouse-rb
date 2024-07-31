@@ -91,6 +91,10 @@ module GreenhouseIo
       get_from_harvest_api "/jobs/#{id}/job_post", options
     end
 
+    def job_posts_for_job(id, options = {})
+      get_from_harvest_api "/jobs/#{id}/job_posts", options
+    end
+
     def users(id = nil, options = {})
       get_from_harvest_api "/users#{path_id(id)}", options
     end
